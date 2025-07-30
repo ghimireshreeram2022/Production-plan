@@ -1,7 +1,23 @@
 import streamlit as st
 import pandas as pd
+from auth import login  # Import your Supabase login function
 
-# Title
+# 🔐 Supabase Login Block
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
+if not st.session_state["authenticated"]:
+    st.title("🔐 Salmonometer Production Plan Login")
+    email = st.text_input("Email", placeholder="Enter your email")
+    password = st.text_input("Password", type="password", placeholder="Enter your password")
+    if st.button("Login"):
+        user = login(email, password)
+        if user:
+            st.session_state["authenticated"] = True
+            st.experimental_rerun()
+    st.stop()
+
+# ✅ App starts here after login
 st.title("🐟 Salmonometer - Production Plan")
 
 # Sidebar Plan Selection
@@ -43,3 +59,8 @@ st.write({
     "Mortality Rate (%)": mortality_rate,
     "Temperature Profile (°C)": temperature_list
 })
+
+# 🚪 Logout Button
+if st.button("🚪 Logout"):
+    st.session_state["authenticated"] = False
+    st.experimental_rerun()
