@@ -1,26 +1,41 @@
 import streamlit as st
-import pandas as pd
-from auth import authenticate_user
-from supabase import create_client, Client  # Import your Supabase login function
+from supabase import create_client, Client
 
+# Supabase configuration (put this at the top)
+SUPABASE_URL = "https://phxybrgcyfcwaclhdmqy.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBoeHlicmdjeWZjd2FjbGhkbXF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4OTExOTUsImV4cCI6MjA2OTQ2NzE5NX0.PXU8JCN68gcQrZFLJp2omuUUq3QzW3WTDFU1jpM3Qgo"
 
-# 🔐 Supabase Login Block
-if not st.session_state.get("authenticated"):
-    st.title("🔐 Salmonometer Dashboard Login")
+# Initialize Supabase client
+@st.cache_resource
+def init_supabase():
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
 
+supabase = init_supabase()
+
+# Authentication check
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
+# Login screen
+if not st.session_state["authenticated"]:
+    st.title("🔐 Login with Supabase")
     email = st.text_input("Email")
     password = st.text_input("Password", type="password")
-
-    if st.button("Log In"):
-        if authenticate_user(email, password):
-            st.success("Login successful!")
-            st.session_state["reload_flag"] = True
+    
+    if st.button("Login"):
+        try:
+            # Supabase authentication
+            auth_response = supabase.auth.sign_in_with_password({
+                "email": email,
+                "password": password
+            })
+            st.session_state["authenticated"] = True
+            st.session_state["user"] = auth_response.user
             st.rerun()
-        else:
-            st.error("Invalid email or password")
+        except Exception as e:
+            st.error(f"Login failed: {e}")
     st.stop()
 
-# ✅ App starts here after login
 st.title("🐟 Salmonometer - Production Plan")
 
 url = "https://phxybrgcyfcwaclhdmqy.supabase.co"
