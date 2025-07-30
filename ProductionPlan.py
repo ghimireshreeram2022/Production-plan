@@ -18,7 +18,7 @@ if "authenticated" not in st.session_state:
 
 # Login screen
 if not st.session_state["authenticated"]:
-    st.title("🔐 Login with Supabase")
+    st.title("🔐 Salmonometer Production Plan Login")
     email = st.text_input("Email")
     password = st.text_input("Password", type="password")
     
