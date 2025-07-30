@@ -31,7 +31,7 @@ st.sidebar.header("📥 Input Parameters")
 
 num_fish = st.sidebar.number_input("Number of Fish", min_value=100000, value=6000000, step=100000)
 initial_weight = st.sidebar.number_input("Initial Weight (g)", min_value=0.1, value=0.2, step=0.1)
-target_weight = st.sidebar.number_input("Target Weight (g)", min_value=1.0, value=100, step=10.0)
+target_weight = st.sidebar.number_input("Target Weight (g)", min_value=1.0, value=100.0, step=10.0)
 stocking_month = st.sidebar.selectbox("Stocking Month", [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
