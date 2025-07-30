@@ -14,7 +14,7 @@ if not st.session_state["authenticated"]:
         user = login(email, password)
         if user:
             st.session_state["authenticated"] = True
-            st.experimental_rerun()
+            st.rerun()
     st.stop()
 
 # ✅ App starts here after login
@@ -63,4 +63,4 @@ st.write({
 # 🚪 Logout Button
 if st.button("🚪 Logout"):
     st.session_state["authenticated"] = False
-    st.experimental_rerun()
+    st.rerun()
