@@ -1,24 +1,32 @@
 import streamlit as st
 import pandas as pd
-from auth import login  # Import your Supabase login function
+from auth import authenticate_user
+from supabase import create_client, Client  # Import your Supabase login function
+
 
 # 🔐 Supabase Login Block
-if "authenticated" not in st.session_state:
-    st.session_state["authenticated"] = False
+if not st.session_state.get("authenticated"):
+    st.title("🔐 Salmonometer Dashboard Login")
 
-if not st.session_state["authenticated"]:
-    st.title("🔐 Salmonometer Production Plan Login")
-    email = st.text_input("Email", placeholder="Enter your email")
-    password = st.text_input("Password", type="password", placeholder="Enter your password")
-    if st.button("Login"):
-        user = login(email, password)
-        if user:
-            st.session_state["authenticated"] = True
+    email = st.text_input("Email")
+    password = st.text_input("Password", type="password")
+
+    if st.button("Log In"):
+        if authenticate_user(email, password):
+            st.success("Login successful!")
+            st.session_state["reload_flag"] = True
             st.rerun()
+        else:
+            st.error("Invalid email or password")
     st.stop()
 
 # ✅ App starts here after login
 st.title("🐟 Salmonometer - Production Plan")
+
+url = "https://phxybrgcyfcwaclhdmqy.supabase.co"
+key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBoeHlicmdjeWZjd2FjbGhkbXF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4OTExOTUsImV4cCI6MjA2OTQ2NzE5NX0.PXU8JCN68gcQrZFLJp2omuUUq3QzW3WTDFU1jpM3Qgo"
+supabase: Client = create_client(url, key)
+
 
 # Sidebar Plan Selection
 plan_type = st.sidebar.selectbox(
